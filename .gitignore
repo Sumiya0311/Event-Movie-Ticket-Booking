@@ -1,0 +1,28 @@
+# Virtual environment
+venv/
+.venv/
+
+# Environment variables and secrets
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Generated PDF tickets
+tickets/
+*.pdf
+
+# Test and tool caches
+.pytest_cache/
+.mypy_cache/
+
+# IDE settings
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Database backup
+mysql_backup.tar.gz

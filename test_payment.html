@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Razorpay Test Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h2>Event Movie Ticket Booking — Test Payment</h2>
+
+    <label>Razorpay Test Key ID:</label>
+    <input id="key" placeholder="rzp_test_..." />
+    <br><br>
+
+    <label>Order ID:</label>
+    <input id="order" placeholder="order_..." />
+    <br><br>
+
+    <label>Amount (rupees):</label>
+    <input id="amount" type="number" value="500" />
+    <br><br>
+
+    <button onclick="payNow()">Pay Now</button>
+
+    <h3>Payment Response</h3>
+    <pre id="result"></pre>
+
+    <script>
+        function payNow() {
+            const key = document.getElementById("key").value.trim();
+            const order = document.getElementById("order").value.trim();
+            const amount = Number(document.getElementById("amount").value);
+
+            if (!key || !order || !Number.isFinite(amount) || amount <= 0) {
+                alert("Enter the test key, order ID, and a valid amount.");
+                return;
+            }
+
+            const options = {
+                key: key,
+                order_id: order,
+                amount: Math.round(amount * 100),
+                currency: "INR",
+                name: "Event Movie Ticket Booking",
+                description: "Test booking payment",
+
+                handler: function (response) {
+                    document.getElementById("result").textContent =
+                        JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        }, null, 2);
+                },
+
+                modal: {
+                    ondismiss: function () {
+                        document.getElementById("result").textContent =
+                            "Checkout closed without completing payment.";
+                    }
+                }
+            };
+
+            const checkout = new Razorpay(options);
+
+            checkout.on("payment.failed", function (response) {
+                document.getElementById("result").textContent =
+                    JSON.stringify(response.error, null, 2);
+            });
+
+            checkout.open();
+        }
+    </script>
+</body>
+</html>
